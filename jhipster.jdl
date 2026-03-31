@@ -2,9 +2,7 @@ entity MegaSetType {
   name String required,
   version Integer required,
   active Boolean,
-  isLatest Boolean,
-  createdDate Instant,
-  lastModifiedDate Instant
+  isLatest Boolean
 }
 
 entity MegaSet {
@@ -19,24 +17,18 @@ entity MegaSet {
   descriptionES String,
   descriptionDE String,
   descriptionFR String,
-  attributes AnyBlob,  // 🔥 JSONB
-  createdDate Instant,
-  lastModifiedDate Instant
+  attributes AnyBlob  // 🔥 JSONB
 }
 
 entity MegaSetPartCount {
-  count Integer,
-  createdDate Instant,
-  lastModifiedDate Instant
+  count Integer
 }
 
 entity MegaPartType {
   name String required,
   version Integer required,
   active Boolean,
-  isLatest Boolean,
-  createdDate Instant,
-  lastModifiedDate Instant
+  isLatest Boolean
 }
 
 entity MegaPart {
@@ -48,15 +40,11 @@ entity MegaPart {
   nameFR String,
   description String,
   notes String,
-  attributes AnyBlob,  // 🔥 JSONB
-  createdDate Instant,
-  lastModifiedDate Instant
+  attributes AnyBlob  // 🔥 JSONB
 }
 
 entity MegaPartSubPartCount {
-  count Integer,
-  createdDate Instant,
-  lastModifiedDate Instant
+  count Integer
 }
 
 // Simple Entities
@@ -65,9 +53,7 @@ entity MegaAsset {
   name String required,
   description String,
   path String required,
-  type AssetType,
-  createdDate Instant,
-  lastModifiedDate Instant
+  type AssetType
 }
 
 enum AssetType {
@@ -77,16 +63,12 @@ enum AssetType {
 
 entity PartSubCategory  {
   name String required,
-  description String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  description String
 }
 
 entity PartCategory  {
   name String required,
-  description String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  description String
 }
 
 enum AttributeType {
@@ -120,17 +102,13 @@ entity MegaAttribute  {
 
   order Integer,
   attributeGroup String,
-  active Boolean,
-  createdDate Instant,
-  lastModifiedDate Instant
+  active Boolean
 }
 
 entity MegaAttributeOption {
   label String,
   value String,
-  description String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  description String
 }
 
 enum UIComponent {
@@ -147,62 +125,45 @@ enum UIComponent {
 // User Data
 entity Profile {
   username String,
-  fullName String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  fullName String
 }
 
 entity FollowingProfile {
-  dateFollowing LocalDate,
-  createdDate Instant,
-  lastModifiedDate Instant
+  dateFollowing LocalDate
 }
 
 entity BlockedProfile {
   reason String,
-  dateBlocked LocalDate,
-  createdDate Instant,
-  lastModifiedDate Instant
+  dateBlocked LocalDate
 }
 
 entity ProfileCollection {
   title String,
   description String,
-  isPublic Boolean,
-  createdDate Instant,
-  lastModifiedDate Instant
+  isPublic Boolean
 }
 
 entity ProfileCollectionSet {
   owned Boolean,
   wanted Boolean,
-  dateAdded LocalDate,
-  createdDate Instant,
-  lastModifiedDate Instant
+  dateAdded LocalDate
 }
 
 entity ProfileRequest {
-  type String,
-  message String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  message String
 }
 
 entity ProfileRequestType {
   key String unique,
   name String,
-  description String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  description String
 }
 
 entity EnvironmentVariable {
   key String unique,
   value String,
   description String,
-  type String,
-  createdDate Instant,
-  lastModifiedDate Instant
+  type String
 }
 
 relationship ManyToOne {
@@ -223,15 +184,15 @@ relationship ManyToOne {
 }
 
 relationship ManyToMany {
-  MegaPart{partSubCategories} to PartSubCategory{megaParts}
-  MegaSetType{attributes} to MegaAttribute{types}
-  MegaPartType{attributes} to MegaAttribute{types}
+  MegaPart{partSubCategory} to PartSubCategory{megaPart}
+  MegaSetType{attribute} to MegaAttribute{setType}
+  MegaPartType{attribute} to MegaAttribute{partType}
 }
 
 
 // Profile
 relationship OneToOne {
-  Profile{user} to User
+  Profile{user} to User with builtInEntity
 }
 relationship ManyToOne {
   FollowingProfile{profile} to Profile
