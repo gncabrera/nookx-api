@@ -1,5 +1,8 @@
 entity MegaSetType {
-  name String required unique,
+  name String required,
+  version Integer required,
+  active Boolean,
+  isLatest Boolean,
   createdDate Instant,
   lastModifiedDate Instant
 }
@@ -28,7 +31,10 @@ entity MegaSetPartCount {
 }
 
 entity MegaPartType {
-  name String required unique,
+  name String required,
+  version Integer required,
+  active Boolean,
+  isLatest Boolean,
   createdDate Instant,
   lastModifiedDate Instant
 }
@@ -58,7 +64,7 @@ entity MegaPartSubPartCount {
 entity MegaAsset {
   name String required,
   description String,
-  path TextBlob required,
+  path String required,
   type AssetType,
   createdDate Instant,
   lastModifiedDate Instant
@@ -112,11 +118,8 @@ entity MegaAttribute  {
 
   regex String,
 
-  // 🔥 para enums
-  options TextBlob
-
   order Integer,
-  group String,
+  attributeGroup String,
   active Boolean,
   createdDate Instant,
   lastModifiedDate Instant
@@ -150,14 +153,14 @@ entity Profile {
 }
 
 entity FollowingProfile {
-  dateFollowing ZonedDateTime,
+  dateFollowing LocalDate,
   createdDate Instant,
   lastModifiedDate Instant
 }
 
 entity BlockedProfile {
   reason String,
-  dateBlocked ZonedDateTime,
+  dateBlocked LocalDate,
   createdDate Instant,
   lastModifiedDate Instant
 }
@@ -173,7 +176,7 @@ entity ProfileCollection {
 entity ProfileCollectionSet {
   owned Boolean,
   wanted Boolean,
-  dateAdded ZonedDateTime,
+  dateAdded LocalDate,
   createdDate Instant,
   lastModifiedDate Instant
 }
@@ -186,7 +189,7 @@ entity ProfileRequest {
 }
 
 entity ProfileRequestType {
-  key String,
+  key String unique,
   name String,
   description String,
   createdDate Instant,
@@ -194,7 +197,7 @@ entity ProfileRequestType {
 }
 
 entity EnvironmentVariable {
-  key String,
+  key String unique,
   value String,
   description String,
   type String,
@@ -212,12 +215,11 @@ relationship ManyToOne {
   MegaPartSubPartCount{parentPart} to MegaPart
 
   MegaAsset{set} to MegaSet
-  MegaAsset{set} to MegaSet
   MegaAsset{part} to MegaPart
-  MegaAsset{part} to MegaPart
+
+  MegaAttributeOption{attribute} to MegaAttribute
 
   ProfileRequest{type} to ProfileRequestType
-
 }
 
 relationship ManyToMany {
@@ -233,7 +235,9 @@ relationship OneToOne {
 }
 relationship ManyToOne {
   FollowingProfile{profile} to Profile
+  FollowingProfile{followedProfile} to Profile
   BlockedProfile{profile} to Profile
+  BlockedProfile{blockedProfile} to Profile
   ProfileCollection{profile} to Profile
   ProfileCollectionSet{collection} to ProfileCollection
   ProfileRequest{profile} to Profile
@@ -259,3 +263,6 @@ service all with serviceClass
 //CREATE INDEX idx_megapart_attributes ON mega_part USING GIN (attributes);
 //CREATE INDEX idx_megaset_type ON mega_set(type_id);
 //CREATE INDEX idx_megapart_type ON mega_part(type_id);
+
+// MegaSetType, MegaPartType:
+// UNIQUE (name, version)
