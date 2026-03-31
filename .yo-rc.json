@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "DotCollector",
+    "buildTool": "maven",
+    "cacheProvider": "no",
+    "clientFramework": "angular",
+    "clientTestFrameworks": [],
+    "clientTheme": "brite",
+    "clientThemeVariant": "light",
+    "creationTimestamp": 1774959945724,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": null,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "9.0.0",
+    "jwtSecretKey": "OTU1NWU2MmQ2Y2U0Zjc1YzMxMjAzOWFhOTg5ZDA1YjkyMjhjZmVhNDg1ZTk0ZjAwNzdiODA2YzM5OGVlOTI3MDEyM2Q3MmRhOTlhMDk2ZGE3NTJhMjUzMThmOGQ2Y2JkZGNlMGE1ODQ3NTdlZjBiZjU0MGJjYjRjNzI1NjQxYzk=",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "en",
+    "packageName": "com.dot.collector.api",
+    "prodDatabaseType": "postgresql",
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}
