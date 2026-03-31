@@ -618,9 +618,13 @@
                                 </platform>
                             </platforms>
                         </from>
-                        <to>
-                            <image>dotcollector:latest</image>
-                        </to>
+                      <to>
+                        <image>ghcr.io/gncabrera/nookx:latest</image>
+                        <auth>
+                          <username>gncabrera</username>
+                          <password>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</password>
+                        </auth>
+                      </to>
                         <container>
                             <entrypoint>
                                 <shell>bash</shell>
