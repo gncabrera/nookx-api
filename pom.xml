@@ -294,6 +294,18 @@
             <groupId>tools.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
+      <!-- Source: https://mvnrepository.com/artifact/com.google.firebase/firebase-admin -->
+        <dependency>
+          <groupId>com.google.firebase</groupId>
+          <artifactId>firebase-admin</artifactId>
+          <version>9.8.0</version>
+          <scope>compile</scope>
+        </dependency>
+      <dependency>
+        <groupId>com.github.javafaker</groupId>
+        <artifactId>javafaker</artifactId>
+        <version>1.0.2</version>
+      </dependency>
     </dependencies>
 
     <build>
