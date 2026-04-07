@@ -23,7 +23,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="20260405180000-1-data" author="jhipster" context="faker">
+    <changeSet id="20260405180000-1-data" author="jhipster">
         <loadData
                   file="config/liquibase/data/currency.csv"
                   separator=";"
