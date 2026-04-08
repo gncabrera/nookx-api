@@ -27,8 +27,8 @@ export const sampleWithFullData: IMegaPart = {
   nameFR: 'metal orderly',
   description: 'alongside obediently aside',
   notes: 'gee unto',
-  attributes: '../fake-data/blob/hipster.png',
-  attributesContentType: 'unknown',
+  attributes: null,
+  attributesContentType: null,
 };
 
 export const sampleWithNewData: NewMegaPart = {

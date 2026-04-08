@@ -17,4 +17,13 @@
                                  referencedTableName="profile"
                                  />
     </changeSet>
+
+    <changeSet id="20260407120000-3" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="clone_information_id"
+                                 baseTableName="profile_collection"
+                                 constraintName="fk_profile_collection__clone_information_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="clone_information"
+                                 />
+    </changeSet>
 </databaseChangeLog>

@@ -16,8 +16,8 @@ export const sampleWithPartialData: IMegaSet = {
   nameEN: 'gee',
   descriptionEN: 'precious',
   descriptionES: 'whose',
-  attributes: '../fake-data/blob/hipster.png',
-  attributesContentType: 'unknown',
+  attributes: null,
+  attributesContentType: null,
 };
 
 export const sampleWithFullData: IMegaSet = {
@@ -33,8 +33,8 @@ export const sampleWithFullData: IMegaSet = {
   descriptionES: 'besides',
   descriptionDE: 'so geez quaver',
   descriptionFR: 'aha',
-  attributes: '../fake-data/blob/hipster.png',
-  attributesContentType: 'unknown',
+  attributes: null,
+  attributesContentType: null,
 };
 
 export const sampleWithNewData: NewMegaSet = {

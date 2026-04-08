@@ -1,7 +1,10 @@
 package com.dot.collector.api.domain;
 
+import com.dot.collector.api.domain.enumeration.AttributeType;
+import com.dot.collector.api.domain.enumeration.ProfileCollectionType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.Getter;
@@ -35,9 +38,31 @@ public class ProfileCollection implements Serializable {
     @Column(name = "is_public")
     private Boolean isPublic;
 
+    @Column(name = "show_price", nullable = false)
+    private boolean showPrice;
+
+    @Column(name = "show_checkbox", nullable = false)
+    private boolean showCheckbox;
+
+    @Column(name = "show_comment", nullable = false)
+    private boolean showComment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(allowSetters = true)
+    private Currency currency;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     private Profile profile;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(unique = true)
+    private CloneInformation cloneInformation;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private ProfileCollectionType type;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -58,6 +83,26 @@ public class ProfileCollection implements Serializable {
 
     public ProfileCollection isPublic(Boolean isPublic) {
         this.setIsPublic(isPublic);
+        return this;
+    }
+
+    public ProfileCollection showPrice(boolean showPrice) {
+        this.setShowPrice(showPrice);
+        return this;
+    }
+
+    public ProfileCollection showCheckbox(boolean showCheckbox) {
+        this.setShowCheckbox(showCheckbox);
+        return this;
+    }
+
+    public ProfileCollection showComment(boolean showComment) {
+        this.setShowComment(showComment);
+        return this;
+    }
+
+    public ProfileCollection currency(Currency currency) {
+        this.setCurrency(currency);
         return this;
     }
 
@@ -93,6 +138,10 @@ public class ProfileCollection implements Serializable {
             ", title='" + getTitle() + "'" +
             ", description='" + getDescription() + "'" +
             ", isPublic='" + getIsPublic() + "'" +
+            ", showPrice=" + isShowPrice() +
+            ", showCheckbox=" + isShowCheckbox() +
+            ", showComment=" + isShowComment() +
+            ", currency=" + getCurrency() +
             "}";
     }
 }

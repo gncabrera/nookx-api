@@ -1,6 +1,7 @@
 package com.dot.collector.api.service;
 
 import com.dot.collector.api.domain.Profile;
+import com.dot.collector.api.domain.User;
 import com.dot.collector.api.repository.ProfileRepository;
 import com.dot.collector.api.service.dto.ProfileDTO;
 import com.dot.collector.api.service.mapper.ProfileMapper;
@@ -26,9 +27,12 @@ public class ProfileService {
 
     private final ProfileMapper profileMapper;
 
-    public ProfileService(ProfileRepository profileRepository, ProfileMapper profileMapper) {
+    private final UserService userService;
+
+    public ProfileService(ProfileRepository profileRepository, ProfileMapper profileMapper, UserService userService) {
         this.profileRepository = profileRepository;
         this.profileMapper = profileMapper;
+        this.userService = userService;
     }
 
     /**
@@ -108,5 +112,18 @@ public class ProfileService {
     public void delete(Long id) {
         LOG.debug("Request to delete Profile : {}", id);
         profileRepository.deleteById(id);
+    }
+
+    public Profile getCurrentProfile() {
+        Optional<User> userWithAuthoritiesResult = userService.getUserWithAuthorities();
+        if (userWithAuthoritiesResult.isPresent()) {
+            User user = userWithAuthoritiesResult.get();
+            Optional<Profile> profileResult = profileRepository.findByUserId(user.getId());
+            if (profileResult.isEmpty()) {
+                throw new RuntimeException("Profile for user " + user + " not found");
+            }
+            return profileResult.get();
+        }
+        return null;
     }
 }

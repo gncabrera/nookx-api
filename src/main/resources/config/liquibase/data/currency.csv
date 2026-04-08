@@ -1,0 +1,16 @@
+id;code;name;symbol
+1;ARS;AR Peso;$
+2;USD;US Dollar;$
+3;EUR;Euro;€
+4;BRL;Brazilian Real;R$
+5;GBP;British Pound;£
+6;CLP;Chilean Peso;$
+7;UYU;Uruguayan Peso;$U
+8;MXN;Mexican Peso;$
+9;COP;Colombian Peso;$
+10;PEN;Peruvian Sol;S/
+11;PYG;Paraguayan Guaraní;₲
+12;BOB;Bolivian Boliviano;Bs.
+13;VES;Venezuelan Bolívar;Bs.
+14;CNY;Chinese Yuan;¥
+15;JPY;Japanese Yen;¥

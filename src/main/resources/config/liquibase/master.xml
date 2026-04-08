@@ -27,10 +27,12 @@
     <include file="config/liquibase/changelog/20260331175654_added_entity_FollowingProfile.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175655_added_entity_BlockedProfile.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175656_added_entity_ProfileCollection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260407120000_added_entity_CloneInformation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175657_added_entity_ProfileCollectionSet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175658_added_entity_ProfileRequest.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175659_added_entity_ProfileRequestType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175700_added_entity_EnvironmentVariable.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260405180000_added_entity_Currency.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20260331175642_added_entity_constraints_MegaSetType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175643_added_entity_constraints_MegaSet.xml" relativeToChangelogFile="false"/>
@@ -44,6 +46,7 @@
     <include file="config/liquibase/changelog/20260331175654_added_entity_constraints_FollowingProfile.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175655_added_entity_constraints_BlockedProfile.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175656_added_entity_constraints_ProfileCollection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260407120000_added_entity_constraints_CloneInformation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175657_added_entity_constraints_ProfileCollectionSet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175658_added_entity_constraints_ProfileRequest.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
