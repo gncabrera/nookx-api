@@ -1,6 +1,6 @@
 package com.dot.collector.api.service.dto;
 
-import jakarta.persistence.Lob;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -45,8 +45,7 @@ public class MegaSetDTO implements Serializable {
 
     private String descriptionFR;
 
-    @Lob
-    private byte[] attributes;
+    private JsonNode attributes;
 
     private String attributesContentType;
 

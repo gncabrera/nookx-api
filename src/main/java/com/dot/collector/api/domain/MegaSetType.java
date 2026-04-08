@@ -14,7 +14,10 @@ import lombok.Setter;
  * A MegaSetType.
  */
 @Entity
-@Table(name = "mega_set_type")
+@Table(
+    name = "mega_set_type",
+    uniqueConstraints = { @UniqueConstraint(name = "ux_mega_set_type__name_version", columnNames = { "name", "version" }) }
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 @Getter
 @Setter

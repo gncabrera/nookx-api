@@ -12,7 +12,9 @@ import com.dot.collector.api.domain.MegaSet;
 import com.dot.collector.api.repository.MegaSetRepository;
 import com.dot.collector.api.service.dto.MegaSetDTO;
 import com.dot.collector.api.service.mapper.MegaSetMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -70,8 +72,8 @@ class MegaSetResourceIT {
     private static final String DEFAULT_DESCRIPTION_FR = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION_FR = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_ATTRIBUTES = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_ATTRIBUTES = TestUtil.createByteArray(1, "1");
+    private static final JsonNode DEFAULT_ATTRIBUTES = JsonNodeFactory.instance.objectNode().put("v", "0");
+    private static final JsonNode UPDATED_ATTRIBUTES = JsonNodeFactory.instance.objectNode().put("v", "1");
     private static final String DEFAULT_ATTRIBUTES_CONTENT_TYPE = "image/jpg";
     private static final String UPDATED_ATTRIBUTES_CONTENT_TYPE = "image/png";
 
