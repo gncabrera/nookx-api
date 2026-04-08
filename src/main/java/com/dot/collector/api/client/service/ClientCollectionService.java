@@ -1,11 +1,11 @@
 package com.dot.collector.api.client.service;
 
-import com.dot.collector.api.client.dto.ClientCollectionDTO;
-import com.dot.collector.api.client.dto.ClientCollectionLiteDTO;
-import com.dot.collector.api.client.dto.ClientCollectionSettingsDTO;
+import com.dot.collector.api.client.dto.*;
+import com.dot.collector.api.domain.CloneInformation;
 import com.dot.collector.api.domain.Currency;
 import com.dot.collector.api.domain.Profile;
 import com.dot.collector.api.domain.ProfileCollection;
+import com.dot.collector.api.repository.CloneInformationRepository;
 import com.dot.collector.api.repository.CurrencyRepository;
 import com.dot.collector.api.repository.ProfileCollectionRepository;
 import com.dot.collector.api.service.ProfileCollectionService;
@@ -28,19 +28,22 @@ public class ClientCollectionService {
     private final ProfileCollectionRepository profileCollectionRepository;
     private final CurrencyRepository currencyRepository;
     private final CurrencyMapper currencyMapper;
+    private final CloneInformationRepository cloneInformationRepository;
 
     public ClientCollectionService(
         ProfileService profileService,
         ProfileCollectionService profileCollectionService,
         ProfileCollectionRepository profileCollectionRepository,
         CurrencyRepository currencyRepository,
-        CurrencyMapper currencyMapper
+        CurrencyMapper currencyMapper,
+        CloneInformationRepository cloneInformationRepository
     ) {
         this.profileService = profileService;
         this.profileCollectionService = profileCollectionService;
         this.profileCollectionRepository = profileCollectionRepository;
         this.currencyRepository = currencyRepository;
         this.currencyMapper = currencyMapper;
+        this.cloneInformationRepository = cloneInformationRepository;
     }
 
     @Transactional(readOnly = true)
@@ -54,10 +57,33 @@ public class ClientCollectionService {
         return result.map(this::toClientCollectionDTO).orElse(null);
     }
 
+    @Transactional
     public ClientCollectionDTO cloneCollection(Long sourceCollectionId, ClientCollectionDTO dto) {
+        Optional<ProfileCollection> result = profileCollectionRepository.findById(sourceCollectionId);
+        if (result.isPresent()) {
+            ProfileCollection sourceCollection = result.get();
+            ClientCollectionDTO sourceDto = toClientCollectionDTO(sourceCollection);
+            sourceDto.setTitle("Copy of " + sourceDto.getTitle());
+            sourceDto.setId(null);
+            ClientCollectionDTO clonedCollectionDto = create(sourceDto);
+
+            ProfileCollection clonedCollection = profileCollectionRepository.findById(clonedCollectionDto.getId()).get();
+
+            CloneInformation info = new CloneInformation();
+            info.setCloned(true);
+            info.setSourceCollection(sourceCollection);
+            info.setCollection(clonedCollection);
+            cloneInformationRepository.save(info);
+
+            clonedCollection.setCloneInformation(info);
+            profileCollectionRepository.save(clonedCollection);
+
+            return toClientCollectionDTO(clonedCollection);
+        }
         return null;
     }
 
+    @Transactional
     public ClientCollectionDTO create(ClientCollectionDTO dto) {
         Profile currentProfile = profileService.getCurrentProfile();
 
@@ -94,7 +120,29 @@ public class ClientCollectionService {
             }
         }
 
+        ClientCollectionCommunityDTO communityDTO = new ClientCollectionCommunityDTO();
+        communityDTO.setTotalCloned(77);
+        communityDTO.setTotalComments(88);
+        communityDTO.setTotalStars(99);
+
+        CloneInformation cloneInformation = profileCollection.getCloneInformation();
+        if (cloneInformation != null) {
+            ClientCloneInformationDTO clone = getClientCloneInformationDTO(cloneInformation);
+            communityDTO.setClone(clone);
+        }
+        dto.setCommunity(communityDTO);
         return dto;
+    }
+
+    private static ClientCloneInformationDTO getClientCloneInformationDTO(CloneInformation cloneInformation) {
+        ClientCloneInformationDTO clone = new ClientCloneInformationDTO();
+        clone.setCloned(cloneInformation.getCloned());
+        clone.setSourceCollectionId(cloneInformation.getSourceCollection().getId());
+        clone.setSourceUserId(cloneInformation.getSourceCollection().getProfile().getId());
+        clone.setSourceUsername(cloneInformation.getSourceCollection().getProfile().getUsername());
+        //TODO: Add Image here!
+        clone.setSourceUserImageUrl("https://placehold.co/100x100");
+        return clone;
     }
 
     private ClientCollectionLiteDTO toClientCollectionLiteDTO(ProfileCollection profileCollection) {
@@ -112,6 +160,12 @@ public class ClientCollectionService {
                 dto.setCreatedBy(profile.getFullName());
             }
         }
+
+        ClientCollectionCommunityDTO communityDTO = new ClientCollectionCommunityDTO();
+        communityDTO.setTotalCloned(77);
+        communityDTO.setTotalComments(88);
+        communityDTO.setTotalStars(99);
+        dto.setCommunity(communityDTO);
 
         return dto;
     }
