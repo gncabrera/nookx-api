@@ -47,7 +47,7 @@
             <column name="description_fr" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="attributes" type="${blobType}">
+            <column name="attributes" type="${jsonbType}">
                 <constraints nullable="true" />
             </column>
             <column name="attributes_content_type" type="varchar(255)">

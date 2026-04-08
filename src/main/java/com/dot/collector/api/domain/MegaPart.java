@@ -1,6 +1,7 @@
 package com.dot.collector.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serial;
@@ -10,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * A MegaPart.
@@ -56,9 +59,9 @@ public class MegaPart implements Serializable {
     @Column(name = "notes")
     private String notes;
 
-    @Lob
-    @Column(name = "attributes")
-    private byte[] attributes;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "attributes", columnDefinition = "jsonb")
+    private JsonNode attributes;
 
     @Column(name = "attributes_content_type")
     private String attributesContentType;
@@ -126,7 +129,7 @@ public class MegaPart implements Serializable {
         return this;
     }
 
-    public MegaPart attributes(byte[] attributes) {
+    public MegaPart attributes(JsonNode attributes) {
         this.setAttributes(attributes);
         return this;
     }

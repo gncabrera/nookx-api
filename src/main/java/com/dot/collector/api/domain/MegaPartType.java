@@ -14,7 +14,10 @@ import lombok.Setter;
  * A MegaPartType.
  */
 @Entity
-@Table(name = "mega_part_type")
+@Table(
+    name = "mega_part_type",
+    uniqueConstraints = { @UniqueConstraint(name = "ux_mega_part_type__name_version", columnNames = { "name", "version" }) }
+)
 @SuppressWarnings("common-java:DuplicatedBlocks")
 @Getter
 @Setter

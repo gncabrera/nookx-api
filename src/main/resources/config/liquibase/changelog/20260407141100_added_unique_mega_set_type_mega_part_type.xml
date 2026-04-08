@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- UNIQUE (name, version) on MegaSetType and MegaPartType (see jhipster.jdl). -->
+    <changeSet id="20260407141100-1" author="jhipster">
+        <addUniqueConstraint
+            constraintName="ux_mega_set_type__name_version"
+            tableName="mega_set_type"
+            columnNames="name, version"/>
+    </changeSet>
+
+    <changeSet id="20260407141100-2" author="jhipster">
+        <addUniqueConstraint
+            constraintName="ux_mega_part_type__name_version"
+            tableName="mega_part_type"
+            columnNames="name, version"/>
+    </changeSet>
+</databaseChangeLog>

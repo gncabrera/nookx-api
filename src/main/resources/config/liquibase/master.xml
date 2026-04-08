@@ -7,6 +7,7 @@
     <property name="floatType" value="float4" dbms="postgresql"/>
     <property name="clobType" value="clob" dbms="postgresql"/>
     <property name="blobType" value="blob" dbms="postgresql"/>
+    <property name="jsonbType" value="jsonb" dbms="postgresql"/>
     <property name="uuidType" value="uuid" dbms="postgresql"/>
     <property name="datetimeType" value="datetime" dbms="postgresql"/>
     <property name="timeType" value="time(6)" dbms="postgresql"/>
@@ -33,6 +34,8 @@
     <include file="config/liquibase/changelog/20260331175659_added_entity_ProfileRequestType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175700_added_entity_EnvironmentVariable.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260405180000_added_entity_Currency.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260407141000_postgresql_mega_set_mega_part_indexes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260407141100_added_unique_mega_set_type_mega_part_type.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20260331175642_added_entity_constraints_MegaSetType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260331175643_added_entity_constraints_MegaSet.xml" relativeToChangelogFile="false"/>
