@@ -115,15 +115,13 @@ public class ProfileService {
     }
 
     public Profile getCurrentProfile() {
-        Optional<User> userWithAuthoritiesResult = userService.getUserWithAuthorities();
-        if (userWithAuthoritiesResult.isPresent()) {
-            User user = userWithAuthoritiesResult.get();
-            Optional<Profile> profileResult = profileRepository.findByUserId(user.getId());
-            if (profileResult.isEmpty()) {
-                throw new RuntimeException("Profile for user " + user + " not found");
-            }
-            return profileResult.get();
-        }
-        return null;
+        return userService
+            .getUserWithAuthorities()
+            .map(user ->
+                profileRepository
+                    .findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("Profile for user " + user + " not found"))
+            )
+            .orElse(null);
     }
 }

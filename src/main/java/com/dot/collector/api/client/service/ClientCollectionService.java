@@ -59,28 +59,30 @@ public class ClientCollectionService {
 
     @Transactional
     public ClientCollectionDTO cloneCollection(Long sourceCollectionId, ClientCollectionDTO dto) {
-        Optional<ProfileCollection> result = profileCollectionRepository.findById(sourceCollectionId);
-        if (result.isPresent()) {
-            ProfileCollection sourceCollection = result.get();
-            ClientCollectionDTO sourceDto = toClientCollectionDTO(sourceCollection);
-            sourceDto.setTitle("Copy of " + sourceDto.getTitle());
-            sourceDto.setId(null);
-            ClientCollectionDTO clonedCollectionDto = create(sourceDto);
+        return profileCollectionRepository
+            .findById(sourceCollectionId)
+            .map(sourceCollection -> {
+                ClientCollectionDTO sourceDto = toClientCollectionDTO(sourceCollection);
+                sourceDto.setTitle("Copy of " + sourceDto.getTitle());
+                sourceDto.setId(null);
+                ClientCollectionDTO clonedCollectionDto = create(sourceDto);
 
-            ProfileCollection clonedCollection = profileCollectionRepository.findById(clonedCollectionDto.getId()).get();
+                ProfileCollection clonedCollection = profileCollectionRepository
+                    .findById(clonedCollectionDto.getId())
+                    .orElseThrow();
 
-            CloneInformation info = new CloneInformation();
-            info.setCloned(true);
-            info.setSourceCollection(sourceCollection);
-            info.setCollection(clonedCollection);
-            cloneInformationRepository.save(info);
+                CloneInformation info = new CloneInformation();
+                info.setCloned(true);
+                info.setSourceCollection(sourceCollection);
+                info.setCollection(clonedCollection);
+                cloneInformationRepository.save(info);
 
-            clonedCollection.setCloneInformation(info);
-            profileCollectionRepository.save(clonedCollection);
+                clonedCollection.setCloneInformation(info);
+                profileCollectionRepository.save(clonedCollection);
 
-            return toClientCollectionDTO(clonedCollection);
-        }
-        return null;
+                return toClientCollectionDTO(clonedCollection);
+            })
+            .orElse(null);
     }
 
     @Transactional
