@@ -649,7 +649,7 @@
                             </platforms>
                         </from>
                       <to>
-                        <image>ghcr.io/gncabrera/nookx:latest</image>
+                        <image>ghcr.io/gncabrera/nookx-api:latest</image>
                         <auth>
                           <username>gncabrera</username>
                           <password>${env.DOCKER_GITHUB_PAT}</password>
@@ -875,6 +875,16 @@
                     <optional>true</optional>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <liquibase-plugin.password/>
+                <liquibase-plugin.url>jdbc:postgresql://localhost:5432/DotCollector</liquibase-plugin.url>
+                <liquibase-plugin.username>DotCollector</liquibase-plugin.username>
+                <profile.test>test</profile.test>
+                <spring.profiles.active>test${profile.tls}${profile.no-liquibase}</spring.profiles.active>
+            </properties>
         </profile>
         <profile>
             <id>docker-compose</id>
