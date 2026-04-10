@@ -652,7 +652,6 @@
                         <image>ghcr.io/gncabrera/nookx-api:latest</image>
                         <auth>
                           <username>gncabrera</username>
-                          <password>${env.DOCKER_GITHUB_PAT}</password>
                         </auth>
                       </to>
                         <container>
