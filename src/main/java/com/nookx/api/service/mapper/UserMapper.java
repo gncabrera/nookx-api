@@ -80,6 +80,7 @@ public class UserMapper {
         return authorities;
     }
 
+    @Named("userFromId")
     public User userFromId(Long id) {
         if (id == null) {
             return null;

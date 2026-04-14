@@ -31,6 +31,10 @@ public class MegaAssetDTO implements Serializable {
 
     private Long sizeBytes;
 
+    private Long uploadedById;
+
+    private boolean isPublic;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -63,6 +67,8 @@ public class MegaAssetDTO implements Serializable {
             ", type='" + getType() + "'" +
             ", contentType='" + getContentType() + "'" +
             ", sizeBytes=" + getSizeBytes() +
+            ", uploadedById=" + getUploadedById() +
+            ", isPublic=" + isPublic() +
             "}";
     }
 }

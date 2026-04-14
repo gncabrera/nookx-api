@@ -1,7 +1,9 @@
 package com.nookx.api.web.rest;
 
+import com.nookx.api.domain.User;
 import com.nookx.api.repository.MegaAssetRepository;
 import com.nookx.api.service.MegaAssetService;
+import com.nookx.api.service.UserService;
 import com.nookx.api.service.dto.MegaAssetDTO;
 import com.nookx.api.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -39,9 +41,12 @@ public class MegaAssetResource {
 
     private final MegaAssetRepository megaAssetRepository;
 
-    public MegaAssetResource(MegaAssetService megaAssetService, MegaAssetRepository megaAssetRepository) {
+    private final UserService userService;
+
+    public MegaAssetResource(MegaAssetService megaAssetService, MegaAssetRepository megaAssetRepository, UserService userService) {
         this.megaAssetService = megaAssetService;
         this.megaAssetRepository = megaAssetRepository;
+        this.userService = userService;
     }
 
     @PostMapping("")
@@ -59,10 +64,12 @@ public class MegaAssetResource {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MegaAssetDTO> uploadMegaAsset(
         @RequestParam("file") MultipartFile file,
-        @RequestParam(value = "description", required = false) String description
+        @RequestParam(value = "description", required = false) String description,
+        @RequestParam(value = "isPublic", required = false, defaultValue = "false") boolean isPublic
     ) throws URISyntaxException {
         LOG.debug("REST request to upload MegaAsset file");
-        MegaAssetDTO megaAssetDTO = megaAssetService.upload(file, description);
+
+        MegaAssetDTO megaAssetDTO = megaAssetService.upload(file, description, isPublic);
         return ResponseEntity.created(new URI("/api/assets/" + megaAssetDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, megaAssetDTO.getId().toString()))
             .body(megaAssetDTO);

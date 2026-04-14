@@ -48,6 +48,14 @@ public class MegaAsset implements Serializable {
     @Column(name = "size_bytes")
     private Long sizeBytes;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "uploaded_by_id")
+    private User uploadedBy;
+
+    @NotNull
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic = false;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public MegaAsset id(Long id) {
@@ -85,6 +93,11 @@ public class MegaAsset implements Serializable {
         return this;
     }
 
+    public MegaAsset uploadedBy(User uploadedBy) {
+        this.setUploadedBy(uploadedBy);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -115,6 +128,7 @@ public class MegaAsset implements Serializable {
             ", type='" + getType() + "'" +
             ", contentType='" + getContentType() + "'" +
             ", sizeBytes=" + getSizeBytes() +
+            ", isPublic=" + isPublic() +
             "}";
     }
 }

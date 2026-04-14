@@ -5,6 +5,7 @@ import com.nookx.api.domain.Authority;
 import com.nookx.api.domain.Profile;
 import com.nookx.api.domain.ProfileCollection;
 import com.nookx.api.domain.User;
+import com.nookx.api.domain.enumeration.ProfileCollectionType;
 import com.nookx.api.repository.AuthorityRepository;
 import com.nookx.api.repository.ProfileCollectionRepository;
 import com.nookx.api.repository.ProfileRepository;
@@ -92,6 +93,7 @@ public class UserBuilderService {
 
         ProfileCollection profileCollection = new ProfileCollection();
         profileCollection.setProfile(profile);
+        profileCollection.setType(ProfileCollectionType.STANDARD);
         profileCollection.setIsPublic(false);
         profileCollection.setTitle("Default");
         profileCollection.setDescription("Default Collection");

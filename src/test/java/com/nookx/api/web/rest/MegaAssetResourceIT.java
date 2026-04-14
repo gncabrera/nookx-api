@@ -11,6 +11,7 @@ import com.nookx.api.IntegrationTest;
 import com.nookx.api.domain.MegaAsset;
 import com.nookx.api.domain.enumeration.AssetType;
 import com.nookx.api.repository.MegaAssetRepository;
+import com.nookx.api.repository.UserRepository;
 import com.nookx.api.service.dto.MegaAssetDTO;
 import com.nookx.api.service.mapper.MegaAssetMapper;
 import java.util.Random;
@@ -49,6 +50,7 @@ class MegaAssetResourceIT {
 
     private static final String ENTITY_API_URL = "/api/client/assets";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    private static final String ENTITY_API_URL_DL = ENTITY_API_URL + "/dl/{uuid}";
 
     private static Random random = new Random();
     private static AtomicLong longCount = new AtomicLong(random.nextInt() + (2L * Integer.MAX_VALUE));
@@ -61,6 +63,9 @@ class MegaAssetResourceIT {
 
     @Autowired
     private MegaAssetMapper megaAssetMapper;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MockMvc restMegaAssetMockMvc;
@@ -131,9 +136,10 @@ class MegaAssetResourceIT {
     void uploadMegaAsset() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         MockMultipartFile file = new MockMultipartFile("file", "hello.txt", MediaType.TEXT_PLAIN_VALUE, "hello".getBytes());
+        long userId = userRepository.findOneByLogin("user").orElseThrow().getId();
         MegaAssetDTO returnedMegaAssetDTO = om.readValue(
             restMegaAssetMockMvc
-                .perform(multipart(ENTITY_API_URL + "/upload").file(file).param("description", "my doc"))
+                .perform(multipart(ENTITY_API_URL + "/upload").file(file).param("description", "my doc").param("isPublic", "true"))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
@@ -148,8 +154,27 @@ class MegaAssetResourceIT {
         assertThat(returnedMegaAssetDTO.getContentType()).isEqualTo(MediaType.TEXT_PLAIN_VALUE);
         assertThat(returnedMegaAssetDTO.getSizeBytes()).isEqualTo(5L);
         assertThat(returnedMegaAssetDTO.getPath()).endsWith(".txt");
+        assertThat(returnedMegaAssetDTO.getUploadedById()).isEqualTo(userId);
+        assertThat(returnedMegaAssetDTO.isPublic()).isTrue();
 
         insertedMegaAsset = megaAssetMapper.toEntity(returnedMegaAssetDTO);
+    }
+
+    @Test
+    @Transactional
+    void uploadMegaAssetIsPublicDefaultsToFalse() throws Exception {
+        MockMultipartFile file = new MockMultipartFile("file", "x.txt", MediaType.TEXT_PLAIN_VALUE, "x".getBytes());
+        MegaAssetDTO dto = om.readValue(
+            restMegaAssetMockMvc
+                .perform(multipart(ENTITY_API_URL + "/upload").file(file))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(),
+            MegaAssetDTO.class
+        );
+        assertThat(dto.isPublic()).isFalse();
+        insertedMegaAsset = megaAssetMapper.toEntity(dto);
     }
 
     @Test
@@ -236,7 +261,7 @@ class MegaAssetResourceIT {
         insertedMegaAsset = megaAssetMapper.toEntity(uploaded);
 
         restMegaAssetMockMvc
-            .perform(get(ENTITY_API_URL_ID, uploaded.getId()))
+            .perform(get(ENTITY_API_URL_DL, uploaded.getPath()))
             .andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
             .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, containsString("hello.txt")))
@@ -247,7 +272,7 @@ class MegaAssetResourceIT {
     @Transactional
     void downloadMegaAssetNotFoundWhenFileMissing() throws Exception {
         insertedMegaAsset = megaAssetRepository.saveAndFlush(megaAsset);
-        restMegaAssetMockMvc.perform(get(ENTITY_API_URL_ID, megaAsset.getId())).andExpect(status().isNotFound());
+        restMegaAssetMockMvc.perform(get(ENTITY_API_URL_DL, megaAsset.getPath())).andExpect(status().isNotFound());
     }
 
     @Test

@@ -2,8 +2,10 @@ package com.nookx.api.service;
 
 import com.nookx.api.config.ApplicationProperties;
 import com.nookx.api.domain.MegaAsset;
+import com.nookx.api.domain.User;
 import com.nookx.api.domain.enumeration.AssetType;
 import com.nookx.api.repository.MegaAssetRepository;
+import com.nookx.api.security.SecurityUtils;
 import com.nookx.api.service.dto.MegaAssetDTO;
 import com.nookx.api.service.mapper.MegaAssetMapper;
 import com.nookx.api.web.rest.errors.BadRequestAlertException;
@@ -12,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -40,14 +43,18 @@ public class MegaAssetService {
 
     private final ApplicationProperties applicationProperties;
 
+    private final UserService userService;
+
     public MegaAssetService(
         MegaAssetRepository megaAssetRepository,
         MegaAssetMapper megaAssetMapper,
-        ApplicationProperties applicationProperties
+        ApplicationProperties applicationProperties,
+        UserService userService
     ) {
         this.megaAssetRepository = megaAssetRepository;
         this.megaAssetMapper = megaAssetMapper;
         this.applicationProperties = applicationProperties;
+        this.userService = userService;
     }
 
     public MegaAssetDTO save(MegaAssetDTO megaAssetDTO) {
@@ -57,7 +64,7 @@ public class MegaAssetService {
         return megaAssetMapper.toDto(megaAsset);
     }
 
-    public MegaAssetDTO upload(MultipartFile file, String description) {
+    public MegaAssetDTO upload(MultipartFile file, String description, boolean isPublic) {
         LOG.debug("Request to upload MegaAsset file");
         if (file == null || file.isEmpty()) {
             throw new BadRequestAlertException("A file is required", ENTITY_NAME, "filerequired");
@@ -98,13 +105,19 @@ public class MegaAssetService {
         AssetType assetType =
             StringUtils.hasText(contentType) && contentType.toLowerCase().startsWith("image/") ? AssetType.IMAGE : AssetType.FILE;
 
+        User uploadedBy = userService
+            .getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("Current user could not be resolved", ENTITY_NAME, "usernotfound"));
+
         MegaAsset megaAsset = new MegaAsset()
             .name(displayName)
             .description(description)
             .path(relativePath)
             .type(assetType)
             .contentType(contentType)
-            .sizeBytes(file.getSize());
+            .sizeBytes(file.getSize())
+            .uploadedBy(uploadedBy);
+        megaAsset.setPublic(isPublic);
         megaAsset = megaAssetRepository.save(megaAsset);
         return megaAssetMapper.toDto(megaAsset);
     }
@@ -121,22 +134,35 @@ public class MegaAssetService {
     @Transactional(readOnly = true)
     public Optional<MegaAssetFileDownload> findFileForDownload(String uuid) {
         LOG.debug("Request to get MegaAsset file stream : {}", uuid);
-        Optional<MegaAssetDTO> dtoOpt = megaAssetRepository.findByPath(uuid).map(megaAssetMapper::toDto);
+        Optional<MegaAsset> dtoOpt = megaAssetRepository.findByPath(uuid);
         if (dtoOpt.isEmpty()) {
             return Optional.empty();
         }
-        MegaAssetDTO dto = dtoOpt.get();
-        if (!StringUtils.hasText(dto.getPath())) {
+
+        MegaAsset entity = dtoOpt.get();
+
+        boolean isAdmin = SecurityUtils.currentUserIsAdmin();
+        if (!entity.isPublic() && !isAdmin) {
+            Optional<User> currentUser = userService.getUserWithAuthorities();
+            if (currentUser.isEmpty()) {
+                return Optional.empty();
+            }
+
+            if (entity.getUploadedBy() != null && !Objects.equals(entity.getUploadedBy().getId(), currentUser.get().getId())) {
+                return Optional.empty();
+            }
+        }
+        if (!StringUtils.hasText(entity.getPath())) {
             return Optional.empty();
         }
         Path baseDir = Paths.get(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
-        Path filePath = baseDir.resolve(dto.getPath()).normalize();
+        Path filePath = baseDir.resolve(entity.getPath()).normalize();
         if (!filePath.startsWith(baseDir) || !Files.isRegularFile(filePath)) {
             LOG.warn("Asset id {} file not found at {}", uuid, filePath);
             return Optional.empty();
         }
         Resource resource = new FileSystemResource(filePath);
-        return Optional.of(new MegaAssetFileDownload(dto, resource));
+        return Optional.of(new MegaAssetFileDownload(megaAssetMapper.toDto(entity), resource));
     }
 
     public void delete(Long id) {

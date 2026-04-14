@@ -51,6 +51,12 @@ public class MegaAssetAsserts {
             .satisfies(a -> assertThat(a.getPath()).as("check path").isEqualTo(expected.getPath()))
             .satisfies(a -> assertThat(a.getType()).as("check type").isEqualTo(expected.getType()))
             .satisfies(a -> assertThat(a.getContentType()).as("check contentType").isEqualTo(expected.getContentType()))
-            .satisfies(a -> assertThat(a.getSizeBytes()).as("check sizeBytes").isEqualTo(expected.getSizeBytes()));
+            .satisfies(a -> assertThat(a.getSizeBytes()).as("check sizeBytes").isEqualTo(expected.getSizeBytes()))
+            .satisfies(a -> assertThat(a.isPublic()).as("check isPublic").isEqualTo(expected.isPublic()))
+            .satisfies(a ->
+                assertThat(a.getUploadedBy() == null ? null : a.getUploadedBy().getId())
+                    .as("check uploadedBy id")
+                    .isEqualTo(expected.getUploadedBy() == null ? null : expected.getUploadedBy().getId())
+            );
     }
 }

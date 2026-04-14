@@ -32,8 +32,21 @@
             <column name="size_bytes" type="bigint">
                 <constraints nullable="true"/>
             </column>
+            <column name="uploaded_by_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_public" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <addForeignKeyConstraint
+            baseTableName="mega_asset"
+            baseColumnNames="uploaded_by_id"
+            constraintName="fk_mega_asset__uploaded_by_id"
+            referencedTableName="jhi_user"
+            referencedColumnNames="id"
+        />
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
