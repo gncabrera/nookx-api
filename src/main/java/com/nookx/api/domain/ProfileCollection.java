@@ -58,6 +58,11 @@ public class ProfileCollection implements Serializable {
     @JoinColumn(unique = true)
     private CloneInformation cloneInformation;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    @JsonIgnoreProperties(value = { "uploadedBy" }, allowSetters = true)
+    private MegaAsset image;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -110,6 +115,11 @@ public class ProfileCollection implements Serializable {
         return this;
     }
 
+    public ProfileCollection image(MegaAsset image) {
+        this.setImage(image);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -141,6 +151,7 @@ public class ProfileCollection implements Serializable {
             ", showCheckbox=" + isShowCheckbox() +
             ", showComment=" + isShowComment() +
             ", currency=" + getCurrency() +
+            ", image=" + getImage() +
             "}";
     }
 }

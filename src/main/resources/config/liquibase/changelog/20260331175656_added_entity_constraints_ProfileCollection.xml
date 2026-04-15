@@ -26,4 +26,13 @@
                                  referencedTableName="clone_information"
                                  />
     </changeSet>
+
+    <changeSet id="20260415120000-4" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="image_id"
+                                 baseTableName="profile_collection"
+                                 constraintName="fk_profile_collection__image_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mega_asset"
+                                 />
+    </changeSet>
 </databaseChangeLog>

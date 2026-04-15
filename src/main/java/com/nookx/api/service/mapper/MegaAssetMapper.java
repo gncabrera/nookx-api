@@ -14,6 +14,16 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
  */
 @Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface MegaAssetMapper extends EntityMapper<MegaAssetDTO, MegaAsset> {
+    @Named("megaAssetFromDtoId")
+    default MegaAsset megaAssetFromDtoId(MegaAssetDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        MegaAsset megaAsset = new MegaAsset();
+        megaAsset.setId(dto.getId());
+        return megaAsset;
+    }
+
     @Override
     @Mapping(target = "uploadedBy", source = "uploadedById", qualifiedByName = "userFromId")
     MegaAsset toEntity(MegaAssetDTO dto);

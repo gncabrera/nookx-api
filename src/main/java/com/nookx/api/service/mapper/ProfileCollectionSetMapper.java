@@ -13,7 +13,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link ProfileCollectionSet} and its DTO {@link ProfileCollectionSetDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { ProfileCollectionMapper.class })
 public interface ProfileCollectionSetMapper extends EntityMapper<ProfileCollectionSetDTO, ProfileCollectionSet> {
     @Mapping(target = "collection", source = "collection", qualifiedByName = "profileCollectionId")
     @Mapping(target = "sets", source = "sets", qualifiedByName = "megaSetIdSet")
@@ -25,6 +25,7 @@ public interface ProfileCollectionSetMapper extends EntityMapper<ProfileCollecti
     @Named("profileCollectionId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "image", source = "image", qualifiedByName = "megaAssetId")
     ProfileCollectionDTO toDtoProfileCollectionId(ProfileCollection profileCollection);
 
     @Named("megaSetId")

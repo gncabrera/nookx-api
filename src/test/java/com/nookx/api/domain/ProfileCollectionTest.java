@@ -1,5 +1,6 @@
 package com.nookx.api.domain;
 
+import static com.nookx.api.domain.MegaAssetTestSamples.*;
 import static com.nookx.api.domain.ProfileCollectionTestSamples.*;
 import static com.nookx.api.domain.ProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,5 +34,17 @@ class ProfileCollectionTest {
 
         profileCollection.profile(null);
         assertThat(profileCollection.getProfile()).isNull();
+    }
+
+    @Test
+    void imageTest() {
+        ProfileCollection profileCollection = getProfileCollectionRandomSampleGenerator();
+        MegaAsset imageBack = getMegaAssetSample1();
+
+        profileCollection.setImage(imageBack);
+        assertThat(profileCollection.getImage()).isEqualTo(imageBack);
+
+        profileCollection.image(null);
+        assertThat(profileCollection.getImage()).isNull();
     }
 }
