@@ -57,13 +57,6 @@ public class MegaAssetService {
         this.userService = userService;
     }
 
-    public MegaAssetDTO save(MegaAssetDTO megaAssetDTO) {
-        LOG.debug("Request to save MegaAsset : {}", megaAssetDTO);
-        MegaAsset megaAsset = megaAssetMapper.toEntity(megaAssetDTO);
-        megaAsset = megaAssetRepository.save(megaAsset);
-        return megaAssetMapper.toDto(megaAsset);
-    }
-
     public MegaAssetDTO upload(MultipartFile file, String description, boolean isPublic) {
         LOG.debug("Request to upload MegaAsset file");
         if (file == null || file.isEmpty()) {
@@ -122,12 +115,6 @@ public class MegaAssetService {
         return megaAssetMapper.toDto(megaAsset);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<MegaAssetDTO> findOne(Long id) {
-        LOG.debug("Request to get MegaAsset : {}", id);
-        return megaAssetRepository.findById(id).map(megaAssetMapper::toDto);
-    }
-
     /**
      * Resolves the stored file for download if the entity exists and the file is on disk.
      */
@@ -141,16 +128,8 @@ public class MegaAssetService {
 
         MegaAsset entity = dtoOpt.get();
 
-        boolean isAdmin = SecurityUtils.currentUserIsAdmin();
-        if (!entity.isPublic() && !isAdmin) {
-            Optional<User> currentUser = userService.getUserWithAuthorities();
-            if (currentUser.isEmpty()) {
-                return Optional.empty();
-            }
-
-            if (entity.getUploadedBy() != null && !Objects.equals(entity.getUploadedBy().getId(), currentUser.get().getId())) {
-                return Optional.empty();
-            }
+        if (!canAccessMegaAsset(entity)) {
+            return Optional.empty();
         }
         if (!StringUtils.hasText(entity.getPath())) {
             return Optional.empty();
@@ -165,9 +144,58 @@ public class MegaAssetService {
         return Optional.of(new MegaAssetFileDownload(megaAssetMapper.toDto(entity), resource));
     }
 
-    public void delete(Long id) {
-        LOG.debug("Request to delete MegaAsset : {}", id);
-        megaAssetRepository.deleteById(id);
+    /**
+     * Deletes a mega asset by stored path key (same value as in {@code /dl/{uuid}}).
+     * Removes the row and the file on disk when permitted.
+     *
+     * @return true if deleted, false if not found or access denied
+     */
+    @Transactional
+    public boolean deleteByUuid(String uuid) {
+        LOG.debug("Request to delete MegaAsset : {}", uuid);
+        Optional<MegaAsset> opt = megaAssetRepository.findByPath(uuid);
+        if (opt.isEmpty()) {
+            return false;
+        }
+        MegaAsset entity = opt.get();
+        if (!canAccessMegaAsset(entity)) {
+            return false;
+        }
+        megaAssetRepository.delete(entity);
+        deleteStoredFile(entity);
+        return true;
+    }
+
+    private boolean canAccessMegaAsset(MegaAsset entity) {
+        boolean isAdmin = SecurityUtils.currentUserIsAdmin();
+        if (entity.isPublic() || isAdmin) {
+            return true;
+        }
+        Optional<User> currentUser = userService.getUserWithAuthorities();
+        if (currentUser.isEmpty()) {
+            return false;
+        }
+        if (entity.getUploadedBy() != null && !Objects.equals(entity.getUploadedBy().getId(), currentUser.get().getId())) {
+            return false;
+        }
+        return true;
+    }
+
+    private void deleteStoredFile(MegaAsset entity) {
+        if (!StringUtils.hasText(entity.getPath())) {
+            return;
+        }
+        Path baseDir = Paths.get(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
+        Path filePath = baseDir.resolve(entity.getPath()).normalize();
+        if (!filePath.startsWith(baseDir)) {
+            LOG.warn("Skipping delete outside base dir: {}", filePath);
+            return;
+        }
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            LOG.warn("Failed to delete file for asset path {}: {}", entity.getPath(), e.getMessage());
+        }
     }
 
     public record MegaAssetFileDownload(MegaAssetDTO asset, Resource resource) {}

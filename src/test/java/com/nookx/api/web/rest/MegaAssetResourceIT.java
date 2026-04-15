@@ -50,6 +50,7 @@ class MegaAssetResourceIT {
 
     private static final String ENTITY_API_URL = "/api/client/assets";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+    private static final String ENTITY_API_URL_UUID = ENTITY_API_URL + "/{uuid}";
     private static final String ENTITY_API_URL_DL = ENTITY_API_URL + "/dl/{uuid}";
 
     private static Random random = new Random();
@@ -478,7 +479,7 @@ class MegaAssetResourceIT {
 
         // Delete the megaAsset
         restMegaAssetMockMvc
-            .perform(delete(ENTITY_API_URL_ID, megaAsset.getId()).accept(MediaType.APPLICATION_JSON))
+            .perform(delete(ENTITY_API_URL_UUID, megaAsset.getPath()).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item

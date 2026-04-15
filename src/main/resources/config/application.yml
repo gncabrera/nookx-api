@@ -170,6 +170,12 @@ spring:
     ansi:
       console-available: true
 
+# Google HTTP Client (Firebase Admin) pulls OpenCensus API only; it probes optional impls and logs DEBUG
+# ClassNotFoundException stacks before falling back to a no-op tracer. Not an application error.
+logging:
+  level:
+    io.opencensus: WARN
+
 server:
   servlet:
     session:

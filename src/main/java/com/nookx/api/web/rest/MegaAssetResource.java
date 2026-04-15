@@ -49,18 +49,6 @@ public class MegaAssetResource {
         this.userService = userService;
     }
 
-    @PostMapping("")
-    public ResponseEntity<MegaAssetDTO> createMegaAsset(@Valid @RequestBody MegaAssetDTO megaAssetDTO) throws URISyntaxException {
-        LOG.debug("REST request to save MegaAsset : {}", megaAssetDTO);
-        if (megaAssetDTO.getId() != null) {
-            throw new BadRequestAlertException("A new megaAsset cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        megaAssetDTO = megaAssetService.save(megaAssetDTO);
-        return ResponseEntity.created(new URI("/api/assets/" + megaAssetDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, megaAssetDTO.getId().toString()))
-            .body(megaAssetDTO);
-    }
-
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MegaAssetDTO> uploadMegaAsset(
         @RequestParam("file") MultipartFile file,
@@ -99,12 +87,12 @@ public class MegaAssetResource {
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMegaAsset(@PathVariable("id") Long id) {
-        LOG.debug("REST request to delete MegaAsset : {}", id);
-        megaAssetService.delete(id);
-        return ResponseEntity.noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
-            .build();
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<Void> deleteMegaAsset(@PathVariable("uuid") String uuid) {
+        LOG.debug("REST request to delete MegaAsset : {}", uuid);
+        if (!megaAssetService.deleteByUuid(uuid)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, uuid)).build();
     }
 }
