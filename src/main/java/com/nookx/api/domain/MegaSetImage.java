@@ -42,6 +42,15 @@ public class MegaSetImage implements Serializable {
     @JsonIgnoreProperties(value = { "uploadedBy" }, allowSetters = true)
     private MegaAsset asset;
 
+    @Column(name = "sort_order", nullable = false)
+    private Integer sortOrder = 0;
+
+    @Column(name = "label")
+    private String label;
+
+    @Column(name = "is_primary", nullable = false)
+    private boolean isPrimary = false;
+
     public MegaSetImage id(Long id) {
         this.setId(id);
         return this;
@@ -54,6 +63,21 @@ public class MegaSetImage implements Serializable {
 
     public MegaSetImage asset(MegaAsset asset) {
         this.setAsset(asset);
+        return this;
+    }
+
+    public MegaSetImage sortOrder(Integer sortOrder) {
+        this.setSortOrder(sortOrder);
+        return this;
+    }
+
+    public MegaSetImage label(String label) {
+        this.setLabel(label);
+        return this;
+    }
+
+    public MegaSetImage isPrimary(boolean isPrimary) {
+        this.setPrimary(isPrimary);
         return this;
     }
 
@@ -76,6 +100,11 @@ public class MegaSetImage implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "MegaSetImage{" + "id=" + getId() + "}";
+        return "MegaSetImage{" +
+            "id=" + getId() +
+            ", sortOrder=" + getSortOrder() +
+            ", label='" + getLabel() + "'" +
+            ", isPrimary=" + isPrimary() +
+            "}";
     }
 }

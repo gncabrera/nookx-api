@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface MegaSetImageRepository extends JpaRepository<MegaSetImage, Long> {
-    List<MegaSetImage> findByMegaSet_Id(Long setId);
+    List<MegaSetImage> findByMegaSet_IdOrderBySortOrderAsc(Long setId);
 }

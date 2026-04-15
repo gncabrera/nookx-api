@@ -20,6 +20,9 @@
             <column name="asset_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="sort_order" type="integer" defaultValueNumeric="0" />
+            <column name="label" type="varchar(255)"/>
+            <column name="is_primary" type="boolean" defaultValueBoolean="false" />
         </createTable>
         <addUniqueConstraint
             columnNames="part_id, asset_id"

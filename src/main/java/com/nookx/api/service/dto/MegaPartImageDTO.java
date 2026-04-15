@@ -20,6 +20,12 @@ public class MegaPartImageDTO implements Serializable {
 
     private MegaAssetDTO asset;
 
+    private Integer sortOrder;
+
+    private String label;
+
+    private Boolean isPrimary;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -44,6 +50,13 @@ public class MegaPartImageDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "MegaPartImageDTO{" + "id=" + getId() + ", part=" + getPart() + ", asset=" + getAsset() + "}";
+        return "MegaPartImageDTO{" +
+            "id=" + getId() +
+            ", part=" + getPart() +
+            ", asset=" + getAsset() +
+            ", sortOrder=" + getSortOrder() +
+            ", label='" + getLabel() + "'" +
+            ", isPrimary=" + getIsPrimary() +
+            "}";
     }
 }

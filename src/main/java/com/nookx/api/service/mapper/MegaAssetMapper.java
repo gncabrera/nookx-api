@@ -27,4 +27,14 @@ public interface MegaAssetMapper extends EntityMapper<MegaAssetDTO, MegaAsset> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "uploadedBy", source = "uploadedById", qualifiedByName = "userFromId")
     void partialUpdate(@MappingTarget MegaAsset entity, MegaAssetDTO dto);
+
+    @Named("megaAssetFromDtoId")
+    default MegaAsset megaAssetFromDtoId(MegaAssetDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        MegaAsset megaAsset = new MegaAsset();
+        megaAsset.setId(dto.getId());
+        return megaAsset;
+    }
 }

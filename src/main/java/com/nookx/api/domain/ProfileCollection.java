@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,6 +59,10 @@ public class ProfileCollection implements Serializable {
     @JoinColumn(unique = true)
     private CloneInformation cloneInformation;
 
+    @OneToOne(mappedBy = "profileCollection", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter(AccessLevel.NONE)
+    private ProfileCollectionImage image;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -107,6 +112,21 @@ public class ProfileCollection implements Serializable {
 
     public ProfileCollection profile(Profile profile) {
         this.setProfile(profile);
+        return this;
+    }
+
+    public void setImage(ProfileCollectionImage image) {
+        if (this.image != null) {
+            this.image.setProfileCollection(null);
+        }
+        this.image = image;
+        if (image != null) {
+            image.setProfileCollection(this);
+        }
+    }
+
+    public ProfileCollection image(ProfileCollectionImage image) {
+        setImage(image);
         return this;
     }
 

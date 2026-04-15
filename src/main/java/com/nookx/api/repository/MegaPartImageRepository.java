@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface MegaPartImageRepository extends JpaRepository<MegaPartImage, Long> {
-    List<MegaPartImage> findByPart_Id(Long partId);
+    List<MegaPartImage> findByPart_IdOrderBySortOrderAsc(Long partId);
 }

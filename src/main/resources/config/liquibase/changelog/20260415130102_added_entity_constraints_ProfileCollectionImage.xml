@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog-ext/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity ProfileCollectionImage.
+    -->
+    <changeSet id="20260415130102-1" author="nookx">
+
+        <addForeignKeyConstraint baseColumnNames="profile_collection_id"
+                                 baseTableName="profile_collection_image"
+                                 constraintName="fk_profile_collection_image__profile_collection_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="profile_collection"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="asset_id"
+                                 baseTableName="profile_collection_image"
+                                 constraintName="fk_profile_collection_image__asset_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mega_asset"
+                                 />
+    </changeSet>
+</databaseChangeLog>

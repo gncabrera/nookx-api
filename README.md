@@ -23,3 +23,22 @@ sudo docker pull ghcr.io/gncabrera/nookx:latest
 sudo docker compose down
 sudo docker compose up -d
 ```
+
+## Development
+
+### New Mega Assets
+
+Prompt for one Image
+
+```
+Add MyEntityImage following the example  @src/main/java/com/nookx/api/domain/ProfileCollection.java with dto, mapper, liquibase migrations, repository
+
+Also add the field MyEntity { MyEntityImage image} so it has only one image
+```
+
+Prompt for multiple Images
+
+```
+Add MyEntityImage following the example  @src/main/java/com/nookx/api/domain/MegaPartImage.java with dto, mapper, liquibase migrations, repository
+
+```
