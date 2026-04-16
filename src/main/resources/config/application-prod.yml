@@ -108,4 +108,6 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  mega-asset:
+    upload-directory: /data/assets
