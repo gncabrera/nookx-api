@@ -39,7 +39,6 @@ public class Interest implements Serializable {
     @Column(name = "is_system", nullable = false)
     private boolean isSystem;
 
-    @NotNull
     @Column(name = "sort_order", nullable = false)
     private Integer order;
 

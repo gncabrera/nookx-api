@@ -1,5 +1,6 @@
-package com.nookx.api.web.rest;
+package com.nookx.api.client.rest;
 
+import com.nookx.api.client.dto.ClientInterestSubscribeDTO;
 import com.nookx.api.repository.InterestRepository;
 import com.nookx.api.service.InterestService;
 import com.nookx.api.service.dto.InterestDTO;
@@ -23,10 +24,10 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.nookx.api.domain.Interest}.
  */
 @RestController
-@RequestMapping("/api/interests")
-public class InterestResource {
+@RequestMapping("/api/client/interests")
+public class ClientInterestResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InterestResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientInterestResource.class);
 
     private static final String ENTITY_NAME = "interest";
 
@@ -37,7 +38,7 @@ public class InterestResource {
 
     private final InterestRepository interestRepository;
 
-    public InterestResource(InterestService interestService, InterestRepository interestRepository) {
+    public ClientInterestResource(InterestService interestService, InterestRepository interestRepository) {
         this.interestService = interestService;
         this.interestRepository = interestRepository;
     }
@@ -52,6 +53,20 @@ public class InterestResource {
         return ResponseEntity.created(new URI("/api/interests/" + interestDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, interestDTO.getId().toString()))
             .body(interestDTO);
+    }
+
+    @PostMapping("/subscribe")
+    public ResponseEntity<Void> subscribeToInterests(@Valid @RequestBody ClientInterestSubscribeDTO subscribeDTO) {
+        LOG.debug("REST request to subscribe current profile to interests : {}", subscribeDTO.getInterestIds());
+        interestService.subscribeCurrentProfileToInterests(subscribeDTO.getInterestIds());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<Void> unsubscribeFromInterests(@Valid @RequestBody ClientInterestSubscribeDTO subscribeDTO) {
+        LOG.debug("REST request to unsubscribe current profile from interests : {}", subscribeDTO.getInterestIds());
+        interestService.unsubscribeCurrentProfileFromInterests(subscribeDTO.getInterestIds());
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
