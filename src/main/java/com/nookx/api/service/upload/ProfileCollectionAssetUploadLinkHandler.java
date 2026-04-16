@@ -71,7 +71,7 @@ public class ProfileCollectionAssetUploadLinkHandler implements AssetUploadLinkH
         Optional<ProfileCollectionImage> byProfileCollectionId = profileCollectionImageRepository.findByProfileCollection_Id(entityId);
 
         if (byProfileCollectionId.isPresent()) {
-            ProfileCollectionImage existing = byProfileCollectionId.get();
+            ProfileCollectionImage existing = byProfileCollectionId.orElse(null);
             existing.setAsset(megaAsset);
             profileCollectionImageRepository.save(existing);
         } else {

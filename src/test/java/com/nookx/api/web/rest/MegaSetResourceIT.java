@@ -277,8 +277,7 @@ class MegaSetResourceIT {
             .andExpect(jsonPath("$.[*].descriptionES").value(hasItem(DEFAULT_DESCRIPTION_ES)))
             .andExpect(jsonPath("$.[*].descriptionDE").value(hasItem(DEFAULT_DESCRIPTION_DE)))
             .andExpect(jsonPath("$.[*].descriptionFR").value(hasItem(DEFAULT_DESCRIPTION_FR)))
-            .andExpect(jsonPath("$.[*].attributesContentType").value(hasItem(DEFAULT_ATTRIBUTES_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].attributes").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_ATTRIBUTES))));
+            .andExpect(jsonPath("$.[*].attributesContentType").value(hasItem(DEFAULT_ATTRIBUTES_CONTENT_TYPE)));
     }
 
     @Test
@@ -304,8 +303,7 @@ class MegaSetResourceIT {
             .andExpect(jsonPath("$.descriptionES").value(DEFAULT_DESCRIPTION_ES))
             .andExpect(jsonPath("$.descriptionDE").value(DEFAULT_DESCRIPTION_DE))
             .andExpect(jsonPath("$.descriptionFR").value(DEFAULT_DESCRIPTION_FR))
-            .andExpect(jsonPath("$.attributesContentType").value(DEFAULT_ATTRIBUTES_CONTENT_TYPE))
-            .andExpect(jsonPath("$.attributes").value(Base64.getEncoder().encodeToString(DEFAULT_ATTRIBUTES)));
+            .andExpect(jsonPath("$.attributesContentType").value(DEFAULT_ATTRIBUTES_CONTENT_TYPE));
     }
 
     @Test

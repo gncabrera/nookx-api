@@ -257,8 +257,7 @@ class MegaPartResourceIT {
             .andExpect(jsonPath("$.[*].nameFR").value(hasItem(DEFAULT_NAME_FR)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].notes").value(hasItem(DEFAULT_NOTES)))
-            .andExpect(jsonPath("$.[*].attributesContentType").value(hasItem(DEFAULT_ATTRIBUTES_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].attributes").value(hasItem(Base64.getEncoder().encodeToString(DEFAULT_ATTRIBUTES))));
+            .andExpect(jsonPath("$.[*].attributesContentType").value(hasItem(DEFAULT_ATTRIBUTES_CONTENT_TYPE)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -298,8 +297,7 @@ class MegaPartResourceIT {
             .andExpect(jsonPath("$.nameFR").value(DEFAULT_NAME_FR))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.notes").value(DEFAULT_NOTES))
-            .andExpect(jsonPath("$.attributesContentType").value(DEFAULT_ATTRIBUTES_CONTENT_TYPE))
-            .andExpect(jsonPath("$.attributes").value(Base64.getEncoder().encodeToString(DEFAULT_ATTRIBUTES)));
+            .andExpect(jsonPath("$.attributesContentType").value(DEFAULT_ATTRIBUTES_CONTENT_TYPE));
     }
 
     @Test

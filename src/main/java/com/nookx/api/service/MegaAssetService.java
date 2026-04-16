@@ -114,7 +114,7 @@ public class MegaAssetService {
         }
 
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename() != null ? file.getOriginalFilename() : "upload");
-        String safeName = Paths.get(originalFilename).getFileName().toString();
+        String safeName = Path.of(originalFilename).getFileName().toString();
         if (safeName.isBlank()) {
             safeName = "upload";
         }
@@ -129,7 +129,7 @@ public class MegaAssetService {
         }
 
         String storedFilename = UUID.randomUUID() + extension.toLowerCase();
-        Path baseDir = Paths.get(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
+        Path baseDir = Path.of(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
 
         try {
             Files.createDirectories(baseDir);
@@ -178,7 +178,7 @@ public class MegaAssetService {
             return Optional.empty();
         }
 
-        MegaAsset entity = dtoOpt.get();
+        MegaAsset entity = dtoOpt.orElse(null);
 
         if (!canAccessMegaAsset(entity)) {
             return Optional.empty();
@@ -186,7 +186,7 @@ public class MegaAssetService {
         if (!StringUtils.hasText(entity.getPath())) {
             return Optional.empty();
         }
-        Path baseDir = Paths.get(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
+        Path baseDir = Path.of(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
         Path filePath = baseDir.resolve(entity.getPath()).normalize();
         if (!filePath.startsWith(baseDir) || !Files.isRegularFile(filePath)) {
             LOG.warn("Asset id {} file not found at {}", uuid, filePath);
@@ -209,7 +209,7 @@ public class MegaAssetService {
         if (opt.isEmpty()) {
             return false;
         }
-        MegaAsset entity = opt.get();
+        MegaAsset entity = opt.orElse(null);
         if (!canAccessMegaAsset(entity)) {
             return false;
         }
@@ -227,7 +227,7 @@ public class MegaAssetService {
         if (currentUser.isEmpty()) {
             return false;
         }
-        if (entity.getUploadedBy() != null && !Objects.equals(entity.getUploadedBy().getId(), currentUser.get().getId())) {
+        if (entity.getUploadedBy() != null && !Objects.equals(entity.getUploadedBy().getId(), currentUser.orElse(null).getId())) {
             return false;
         }
         return true;
@@ -237,7 +237,7 @@ public class MegaAssetService {
         if (!StringUtils.hasText(entity.getPath())) {
             return;
         }
-        Path baseDir = Paths.get(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
+        Path baseDir = Path.of(applicationProperties.getMegaAsset().getUploadDirectory()).toAbsolutePath().normalize();
         Path filePath = baseDir.resolve(entity.getPath()).normalize();
         if (!filePath.startsWith(baseDir)) {
             LOG.warn("Skipping delete outside base dir: {}", filePath);
