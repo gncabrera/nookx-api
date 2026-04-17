@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,6 +42,12 @@ public class Interest implements Serializable {
 
     @Column(name = "sort_order", nullable = false)
     private Integer order;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
+    @Column(name = "deleted_date")
+    private Instant deletedDate;
 
     public Interest id(Long id) {
         this.setId(id);
@@ -88,6 +95,8 @@ public class Interest implements Serializable {
             ", isPublic=" + isPublic() +
             ", isSystem=" + isSystem() +
             ", order=" + getOrder() +
+            ", deleted=" + isDeleted() +
+            ", deletedDate=" + getDeletedDate() +
             "}";
     }
 }

@@ -25,6 +25,12 @@
             </column>
             <column name="sort_order" type="integer" defaultValueNumeric="0">
             </column>
+            <column name="deleted" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="deleted_date" type="timestamp">
+                <constraints nullable="true" />
+            </column>
         </createTable>
     </changeSet>
 
@@ -40,6 +46,8 @@
             <column name="is_public" type="boolean"/>
             <column name="is_system" type="boolean"/>
             <column name="sort_order" type="numeric"/>
+            <column name="deleted" type="boolean"/>
+            <column name="deleted_date" type="timestamp"/>
         </loadData>
     </changeSet>
 

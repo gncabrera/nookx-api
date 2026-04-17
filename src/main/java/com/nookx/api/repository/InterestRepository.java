@@ -14,14 +14,16 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface InterestRepository extends JpaRepository<Interest, Long> {
+    Optional<Interest> findByIdAndDeletedFalse(Long id);
+
     @Query(
-        "SELECT i FROM Interest i WHERE i.isSystem = true OR EXISTS (" +
-            "SELECT 1 FROM ProfileInterest pi WHERE pi.interest.id = i.id AND pi.profile.id = :profileId) ORDER BY i.order"
+        "SELECT i FROM Interest i WHERE i.deleted = false AND (i.isSystem = true OR EXISTS (" +
+            "SELECT 1 FROM ProfileInterest pi WHERE pi.interest.id = i.id AND pi.profile.id = :profileId)) ORDER BY i.order"
     )
     List<Interest> findAllLinkedToProfileOrSystem(@Param("profileId") Long profileId);
 
     @Query(
-        "SELECT i FROM Interest i WHERE i.id = :id AND (i.isSystem = true OR EXISTS (" +
+        "SELECT i FROM Interest i WHERE i.deleted = false AND i.id = :id AND (i.isSystem = true OR EXISTS (" +
             "SELECT 1 FROM ProfileInterest pi WHERE pi.interest.id = i.id AND pi.profile.id = :profileId))"
     )
     Optional<Interest> findByIdLinkedToProfileOrSystem(@Param("id") Long id, @Param("profileId") Long profileId);

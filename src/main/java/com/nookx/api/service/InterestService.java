@@ -8,6 +8,7 @@ import com.nookx.api.repository.ProfileInterestRepository;
 import com.nookx.api.service.dto.InterestDTO;
 import com.nookx.api.service.mapper.InterestMapper;
 import com.nookx.api.web.rest.errors.BadRequestAlertException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +55,8 @@ public class InterestService {
         Interest interest = interestMapper.toEntity(interestDTO);
         interest.setSystem(false);
         interest.setPublic(false);
+        interest.setDeleted(false);
+        interest.setDeletedDate(null);
         interest = interestRepository.save(interest);
 
         Profile currentProfile = profileService.getCurrentProfile();
@@ -79,7 +82,7 @@ public class InterestService {
         List<Long> distinctIds = interestIds.stream().distinct().toList();
         for (Long interestId : distinctIds) {
             Interest interest = interestRepository
-                .findById(interestId)
+                .findByIdAndDeletedFalse(interestId)
                 .orElseThrow(() -> new BadRequestAlertException("Interest not found", "interest", "idnotfound"));
             if (profileInterestRepository.existsByProfile_IdAndInterest_Id(profileId, interestId)) {
                 continue;
@@ -106,7 +109,7 @@ public class InterestService {
         LOG.debug("Request to update Interest : {}", interestDTO);
 
         Interest existing = interestRepository
-            .findById(interestDTO.getId())
+            .findByIdAndDeletedFalse(interestDTO.getId())
             .orElseThrow(() -> new BadRequestAlertException("Entity not found", "interest", "idnotfound"));
 
         assertInterestUpdatableByCurrentProfile(existing);
@@ -154,11 +157,13 @@ public class InterestService {
     public void delete(Long id) {
         LOG.debug("Request to delete Interest : {}", id);
         Interest existing = interestRepository
-            .findById(id)
+            .findByIdAndDeletedFalse(id)
             .orElseThrow(() -> new BadRequestAlertException("Entity not found", "interest", "idnotfound"));
 
         if (existing.isSystem()) throw new AccessDeniedException("Current profile is not linked to this interest");
         assertCurrentUserIsOwner(existing);
-        interestRepository.deleteById(id);
+        existing.setDeleted(true);
+        existing.setDeletedDate(Instant.now());
+        interestRepository.save(existing);
     }
 }
