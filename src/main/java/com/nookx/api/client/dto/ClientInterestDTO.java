@@ -1,4 +1,4 @@
-package com.nookx.api.service.dto;
+package com.nookx.api.client.dto;
 
 import com.nookx.api.domain.Interest;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 @Getter
 @Setter
-public class InterestDTO implements Serializable {
+public class ClientInterestDTO implements Serializable {
 
     private Long id;
 
@@ -33,11 +33,11 @@ public class InterestDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InterestDTO)) {
+        if (!(o instanceof ClientInterestDTO)) {
             return false;
         }
 
-        InterestDTO interestDTO = (InterestDTO) o;
+        ClientInterestDTO interestDTO = (ClientInterestDTO) o;
         if (this.id == null) {
             return false;
         }

@@ -1,12 +1,11 @@
 package com.nookx.api.client.rest;
 
+import com.nookx.api.client.dto.ClientInterestDTO;
 import com.nookx.api.client.dto.ClientInterestSubscribeDTO;
 import com.nookx.api.repository.InterestRepository;
 import com.nookx.api.service.InterestService;
-import com.nookx.api.service.dto.InterestDTO;
 import com.nookx.api.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ClientInterestResource {
     }
 
     @PostMapping("")
-    public ResponseEntity<InterestDTO> createInterest(@Valid @RequestBody InterestDTO interestDTO) throws URISyntaxException {
+    public ResponseEntity<ClientInterestDTO> createInterest(@Valid @RequestBody ClientInterestDTO interestDTO) throws URISyntaxException {
         LOG.debug("REST request to save Interest : {}", interestDTO);
         if (interestDTO.getId() != null) {
             throw new BadRequestAlertException("A new interest cannot already have an ID", ENTITY_NAME, "idexists");
@@ -70,9 +69,9 @@ public class ClientInterestResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InterestDTO> updateInterest(
+    public ResponseEntity<ClientInterestDTO> updateInterest(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody InterestDTO interestDTO
+        @Valid @RequestBody ClientInterestDTO interestDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to update Interest : {}, {}", id, interestDTO);
         if (interestDTO.getId() == null) {
@@ -89,15 +88,15 @@ public class ClientInterestResource {
     }
 
     @GetMapping("")
-    public List<InterestDTO> getAllInterests() {
+    public List<ClientInterestDTO> getAllInterests() {
         LOG.debug("REST request to get all Interests");
         return interestService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InterestDTO> getInterest(@PathVariable("id") Long id) {
+    public ResponseEntity<ClientInterestDTO> getInterest(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Interest : {}", id);
-        Optional<InterestDTO> interestDTO = interestService.findOne(id);
+        Optional<ClientInterestDTO> interestDTO = interestService.findOne(id);
         return ResponseUtil.wrapOrNotFound(interestDTO);
     }
 

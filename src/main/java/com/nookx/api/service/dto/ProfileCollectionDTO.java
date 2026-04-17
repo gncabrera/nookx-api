@@ -1,5 +1,6 @@
 package com.nookx.api.service.dto;
 
+import com.nookx.api.client.dto.ClientInterestDTO;
 import com.nookx.api.domain.ProfileCollection;
 import java.io.Serializable;
 import java.util.Objects;
@@ -24,7 +25,7 @@ public class ProfileCollectionDTO implements Serializable {
 
     private ProfileDTO profile;
 
-    private InterestDTO interest;
+    private ClientInterestDTO interest;
 
     private ProfileCollectionImageDTO image;
 

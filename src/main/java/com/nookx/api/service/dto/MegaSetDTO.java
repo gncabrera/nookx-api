@@ -1,6 +1,7 @@
 package com.nookx.api.service.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.nookx.api.client.dto.ClientInterestDTO;
 import com.nookx.api.domain.MegaSet;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
@@ -52,7 +53,7 @@ public class MegaSetDTO implements Serializable {
 
     private MegaSetTypeDTO type;
 
-    private InterestDTO interest;
+    private ClientInterestDTO interest;
 
     private Set<ProfileCollectionSetDTO> profileCollectionSets = new HashSet<>();
 

@@ -1,17 +1,13 @@
 package com.nookx.api.service;
 
 import com.nookx.api.domain.Profile;
-import com.nookx.api.domain.ProfileInterest;
 import com.nookx.api.repository.InterestRepository;
 import com.nookx.api.repository.ProfileRepository;
-import com.nookx.api.service.dto.InterestDTO;
 import com.nookx.api.service.dto.ProfileDTO;
 import com.nookx.api.service.mapper.ProfileMapper;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

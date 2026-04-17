@@ -1,11 +1,11 @@
 package com.nookx.api.service;
 
+import com.nookx.api.client.dto.ClientInterestDTO;
 import com.nookx.api.domain.Interest;
 import com.nookx.api.domain.Profile;
 import com.nookx.api.domain.ProfileInterest;
 import com.nookx.api.repository.InterestRepository;
 import com.nookx.api.repository.ProfileInterestRepository;
-import com.nookx.api.service.dto.InterestDTO;
 import com.nookx.api.service.mapper.InterestMapper;
 import com.nookx.api.web.rest.errors.BadRequestAlertException;
 import java.time.Instant;
@@ -50,7 +50,7 @@ public class InterestService {
     }
 
     @Transactional
-    public InterestDTO save(InterestDTO interestDTO) {
+    public ClientInterestDTO save(ClientInterestDTO interestDTO) {
         LOG.debug("Request to save Interest : {}", interestDTO);
         Interest interest = interestMapper.toEntity(interestDTO);
         interest.setSystem(false);
@@ -105,7 +105,7 @@ public class InterestService {
         profileInterestRepository.deleteByProfile_IdAndInterest_IdIn(profileId, distinctIds);
     }
 
-    public InterestDTO update(InterestDTO interestDTO) {
+    public ClientInterestDTO update(ClientInterestDTO interestDTO) {
         LOG.debug("Request to update Interest : {}", interestDTO);
 
         Interest existing = interestRepository
@@ -137,7 +137,7 @@ public class InterestService {
     }
 
     @Transactional(readOnly = true)
-    public List<InterestDTO> findAll() {
+    public List<ClientInterestDTO> findAll() {
         LOG.debug("Request to get Interests for current profile and system catalog");
         Long profileId = profileService.getCurrentProfile().getId();
         return interestRepository
@@ -148,7 +148,7 @@ public class InterestService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<InterestDTO> findOne(Long id) {
+    public Optional<ClientInterestDTO> findOne(Long id) {
         LOG.debug("Request to get Interest : {} for current profile", id);
         Long profileId = profileService.getCurrentProfile().getId();
         return interestRepository.findByIdLinkedToProfileOrSystem(id, profileId).map(interestMapper::toDto);

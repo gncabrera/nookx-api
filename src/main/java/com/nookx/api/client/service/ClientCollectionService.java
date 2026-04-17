@@ -1,7 +1,6 @@
 package com.nookx.api.client.service;
 
 import com.nookx.api.client.dto.*;
-import com.nookx.api.client.dto.*;
 import com.nookx.api.config.ApplicationProperties;
 import com.nookx.api.domain.CloneInformation;
 import com.nookx.api.domain.Profile;
@@ -10,11 +9,14 @@ import com.nookx.api.domain.ProfileCollectionImage;
 import com.nookx.api.domain.enumeration.MegaAssetImageSize;
 import com.nookx.api.repository.CloneInformationRepository;
 import com.nookx.api.repository.CurrencyRepository;
+import com.nookx.api.repository.InterestRepository;
 import com.nookx.api.repository.ProfileCollectionImageRepository;
 import com.nookx.api.repository.ProfileCollectionRepository;
 import com.nookx.api.service.ProfileCollectionService;
 import com.nookx.api.service.ProfileService;
 import com.nookx.api.service.mapper.CurrencyMapper;
+import com.nookx.api.service.mapper.InterestMapper;
+import com.nookx.api.web.rest.errors.BadRequestAlertException;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class ClientCollectionService {
     private final CloneInformationRepository cloneInformationRepository;
     private final ProfileCollectionImageRepository profileCollectionImageRepository;
     private final ApplicationProperties applicationProperties;
+    private final InterestRepository interestRepository;
+    private final InterestMapper interestMapper;
 
     public ClientCollectionService(
         ProfileService profileService,
@@ -42,7 +46,9 @@ public class ClientCollectionService {
         CurrencyMapper currencyMapper,
         CloneInformationRepository cloneInformationRepository,
         ProfileCollectionImageRepository profileCollectionImageRepository,
-        ApplicationProperties applicationProperties
+        ApplicationProperties applicationProperties,
+        InterestRepository interestRepository,
+        InterestMapper interestMapper
     ) {
         this.profileService = profileService;
         this.profileCollectionService = profileCollectionService;
@@ -52,6 +58,8 @@ public class ClientCollectionService {
         this.cloneInformationRepository = cloneInformationRepository;
         this.profileCollectionImageRepository = profileCollectionImageRepository;
         this.applicationProperties = applicationProperties;
+        this.interestRepository = interestRepository;
+        this.interestMapper = interestMapper;
     }
 
     @Transactional(readOnly = true)
@@ -169,7 +177,16 @@ public class ClientCollectionService {
         ClientImageDTO clientImageDto = getClientImageDto(profileCollection.getId());
         dto.setImage(clientImageDto);
 
+        dto.setInterest(toClientInterestDto(profileCollection));
+
         return dto;
+    }
+
+    private ClientInterestDTO toClientInterestDto(ProfileCollection profileCollection) {
+        if (profileCollection.getInterest() == null) {
+            return null;
+        }
+        return interestMapper.toDto(profileCollection.getInterest());
     }
 
     private static ClientCloneInformationDTO getClientCloneInformationDTO(CloneInformation cloneInformation) {
@@ -205,6 +222,8 @@ public class ClientCollectionService {
         communityDTO.setTotalStars(99);
         dto.setCommunity(communityDTO);
 
+        dto.setInterest(toClientInterestDto(profileCollection));
+
         return dto;
     }
 
@@ -224,6 +243,18 @@ public class ClientCollectionService {
             if (settings.getCurrency() != null && settings.getCurrency().getId() != null) {
                 currencyRepository.findById(settings.getCurrency().getId()).ifPresent(entity::setCurrency);
             }
+        }
+
+        ClientInterestDTO interestDto = dto.getInterest();
+        if (interestDto != null && interestDto.getId() != null) {
+            Long profileId = profileService.getCurrentProfile().getId();
+            entity.setInterest(
+                interestRepository
+                    .findByIdLinkedToProfileOrSystem(interestDto.getId(), profileId)
+                    .orElseThrow(() -> new BadRequestAlertException("Interest not found", "interest", "idnotfound"))
+            );
+        } else {
+            entity.setInterest(null);
         }
 
         return entity;

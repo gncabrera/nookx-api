@@ -16,4 +16,5 @@ public class ClientCollectionDTO {
     private ClientCollectionCommunityDTO community;
     private ClientCollectionSettingsDTO settings;
     private ClientImageDTO image;
+    private ClientInterestDTO interest;
 }
