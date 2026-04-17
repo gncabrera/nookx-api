@@ -64,8 +64,12 @@ public class ClientCollectionService {
 
     @Transactional(readOnly = true)
     public List<ClientCollectionLiteDTO> getUserCollections() {
+        Profile currentProfile = profileService.getCurrentProfile();
+        if (currentProfile == null) {
+            return List.of();
+        }
         List<ClientCollectionLiteDTO> collections = profileCollectionRepository
-            .findAll()
+            .findByProfile_Id(currentProfile.getId())
             .stream()
             .map(this::toClientCollectionLiteDTO)
             .toList();
