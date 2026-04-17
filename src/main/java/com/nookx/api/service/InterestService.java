@@ -110,6 +110,7 @@ public class InterestService {
             .orElseThrow(() -> new BadRequestAlertException("Entity not found", "interest", "idnotfound"));
 
         assertInterestUpdatableByCurrentProfile(existing);
+        assertCurrentUserIsOwner(existing);
 
         existing.setName(interestDTO.getName());
         existing.setDescription(interestDTO.getDescription());
@@ -119,25 +120,13 @@ public class InterestService {
         return interestMapper.toDto(existing);
     }
 
-    public Optional<InterestDTO> partialUpdate(InterestDTO interestDTO) {
-        LOG.debug("Request to partially update Interest : {}", interestDTO);
-
-        return interestRepository
-            .findById(interestDTO.getId())
-            .map(existingInterest -> {
-                assertInterestUpdatableByCurrentProfile(existingInterest);
-                interestMapper.partialUpdate(existingInterest, interestDTO);
-
-                return existingInterest;
-            })
-            .map(interestRepository::save)
-            .map(interestMapper::toDto);
-    }
-
     private void assertInterestUpdatableByCurrentProfile(Interest interest) {
         if (interest.isSystem()) {
             throw new BadRequestAlertException("System interests cannot be updated", "interest", "systeminterest");
         }
+    }
+
+    private void assertCurrentUserIsOwner(Interest interest) {
         Profile currentProfile = profileService.getCurrentProfile();
         if (!profileInterestRepository.existsByProfile_IdAndInterest_Id(currentProfile.getId(), interest.getId())) {
             throw new AccessDeniedException("Current profile is not linked to this interest");
@@ -146,18 +135,30 @@ public class InterestService {
 
     @Transactional(readOnly = true)
     public List<InterestDTO> findAll() {
-        LOG.debug("Request to get all Interests");
-        return interestRepository.findAll().stream().map(interestMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        LOG.debug("Request to get Interests for current profile and system catalog");
+        Long profileId = profileService.getCurrentProfile().getId();
+        return interestRepository
+            .findAllLinkedToProfileOrSystem(profileId)
+            .stream()
+            .map(interestMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Transactional(readOnly = true)
     public Optional<InterestDTO> findOne(Long id) {
-        LOG.debug("Request to get Interest : {}", id);
-        return interestRepository.findById(id).map(interestMapper::toDto);
+        LOG.debug("Request to get Interest : {} for current profile", id);
+        Long profileId = profileService.getCurrentProfile().getId();
+        return interestRepository.findByIdLinkedToProfileOrSystem(id, profileId).map(interestMapper::toDto);
     }
 
     public void delete(Long id) {
         LOG.debug("Request to delete Interest : {}", id);
+        Interest existing = interestRepository
+            .findById(id)
+            .orElseThrow(() -> new BadRequestAlertException("Entity not found", "interest", "idnotfound"));
+
+        if (existing.isSystem()) throw new AccessDeniedException("Current profile is not linked to this interest");
+        assertCurrentUserIsOwner(existing);
         interestRepository.deleteById(id);
     }
 }

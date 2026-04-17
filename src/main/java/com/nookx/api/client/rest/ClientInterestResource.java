@@ -88,31 +88,6 @@ public class ClientInterestResource {
             .body(interestDTO);
     }
 
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<InterestDTO> partialUpdateInterest(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody InterestDTO interestDTO
-    ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Interest partially : {}, {}", id, interestDTO);
-        if (interestDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, interestDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!interestRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<InterestDTO> result = interestService.partialUpdate(interestDTO);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, interestDTO.getId().toString())
-        );
-    }
-
     @GetMapping("")
     public List<InterestDTO> getAllInterests() {
         LOG.debug("REST request to get all Interests");
